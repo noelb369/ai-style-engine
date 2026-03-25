@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #09090b;
+      color: #e4e4e7;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 5rem 1.5rem 4rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+    }
+
+    /* --- Header --- */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      margin-bottom: 1.25rem;
+    }
+
+    .logo svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #fafafa;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #71717a;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* --- Input Section --- */
+    .input-section {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #a1a1aa;
+      margin-bottom: 0.625rem;
+      letter-spacing: 0.01em;
+    }
+
+    textarea {
+      width: 100%;
+      height: 130px;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      color: #e4e4e7;
+      padding: 0.875rem 1rem;
+      font-size: 0.9rem;
+      font-family: inherit;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    textarea:focus {
+      border-color: #3f3f46;
+      box-shadow: 0 0 0 3px rgba(113, 113, 122, 0.1);
+    }
+    textarea::placeholder { color: #3f3f46; }
+
+    .controls {
+      display: flex;
+      gap: 0.625rem;
+      margin-top: 1rem;
+    }
+
+    .select-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    select {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      color: #e4e4e7;
+      padding: 0 1rem;
+      height: 44px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus { border-color: #3f3f46; }
+
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid #71717a;
+      pointer-events: none;
+    }
+
+    .generate-btn {
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      padding: 0 1.75rem;
+      height: 44px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25);
+    }
+
+    .generate-btn:active { transform: translateY(0); }
+    .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .hint {
+      text-align: right;
+      margin-top: 0.625rem;
+      font-size: 0.75rem;
+      color: #3f3f46;
+    }
+
+    .hint kbd {
+      background: #27272a;
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-family: inherit;
+      font-size: 0.7rem;
+    }
+
+    /* --- Results --- */
+    .results-section {
+      margin-top: 2rem;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .results-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .results-count {
+      font-size: 0.75rem;
+      color: #3f3f46;
+    }
+
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 1.25rem 1.375rem;
+      position: relative;
+      animation: fadeIn 0.4s ease both;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover { border-color: #3f3f46; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-number {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #52525b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid #27272a;
+      border-radius: 7px;
+      color: #71717a;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .copy-btn svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .copy-btn:hover {
+      background: #27272a;
+      color: #a1a1aa;
+      border-color: #3f3f46;
+    }
+
+    .copy-btn.copied {
+      color: #4ade80;
+      border-color: rgba(74, 222, 128, 0.3);
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #d4d4d8;
+      white-space: pre-wrap;
+    }
+
+    /* --- Spinner --- */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.25);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* --- Error --- */
+    .error {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* --- Divider --- */
+    .divider {
+      height: 1px;
+      background: #27272a;
+      margin: 2.5rem 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h1>Style Engine</h1>
+      <p class="subtitle">Rewrite anything in a completely different vibe</p>
+    </div>
+
+    <div class="input-section">
+      <label class="field-label" for="input">Your text</label>
+      <textarea id="input" placeholder="Paste your message, idea, or problem here..."></textarea>
+
+      <div class="controls">
+        <div class="select-wrapper">
+          <select id="style">
+            <option value="cocky">Cocky</option>
+            <option value="ceo">CEO</option>
+            <option value="funny">Funny</option>
+            <option value="analytical">Analytical</option>
+          </select>
+        </div>
+        <button class="generate-btn" id="generate" onclick="generate()">Generate</button>
+      </div>
+      <div class="hint"><kbd>Cmd</kbd> + <kbd>Enter</kbd></div>
+    </div>
+
+    <div id="results-section" class="results-section" style="display: none;">
+      <div class="divider"></div>
+      <div class="results-header" style="margin-top: 1.5rem;">
+        <span class="results-title">Results</span>
+        <span class="results-count" id="results-count"></span>
+      </div>
+      <div id="results" class="results"></div>
+    </div>
+  </div>
+
+  <script>
+    async function generate() {
+      const text = document.getElementById('input').value.trim();
+      const style = document.getElementById('style').value;
+      const btn = document.getElementById('generate');
+      const results = document.getElementById('results');
+      const resultsSection = document.getElementById('results-section');
+      const resultsCount = document.getElementById('results-count');
+
+      if (!text) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Working...';
+      results.innerHTML = '';
+      resultsSection.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, style }),
+        });
+
+        if (!res.ok) throw new Error('Request failed');
+        const data = await res.json();
+
+        resultsSection.style.display = 'block';
+        resultsCount.textContent = `${data.variations.length} variations`;
+
+        data.variations.forEach((v, i) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.style.animationDelay = `${i * 0.1}s`;
+          card.innerHTML = `
+            <div class="card-top">
+              <div class="card-number">Variation ${i + 1}</div>
+              <button class="copy-btn" onclick="copyText(this)">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+            <div class="card-text">${escapeHtml(v)}</div>
+          `;
+          results.appendChild(card);
+        });
+      } catch (err) {
+        resultsSection.style.display = 'block';
+        resultsCount.textContent = '';
+        results.innerHTML = '<div class="error">Something went wrong. Check your API key and try again.</div>';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate';
+      }
+    }
+
+    function copyText(btn) {
+      const text = btn.closest('.card').querySelector('.card-text').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Copied!
+        `;
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    document.getElementById('input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.metaKey) generate();
+    });
+  </script>
+</body>
+</html>
