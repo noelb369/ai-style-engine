@@ -183,6 +183,91 @@
       font-size: 0.7rem;
     }
 
+    /* --- Slider --- */
+    .slider-group {
+      margin-top: 1.125rem;
+    }
+
+    .slider-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .slider-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #a1a1aa;
+    }
+
+    .slider-value {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #f97316;
+    }
+
+    .slider-track {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      background: #27272a;
+      border-radius: 3px;
+    }
+
+    .slider-fill {
+      position: absolute;
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #ec4899);
+      border-radius: 3px;
+      transition: width 0.15s;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fafafa;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      margin-top: -6px;
+      transition: transform 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .slider-container {
+      position: relative;
+    }
+
+    .slider-container input[type="range"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.7rem;
+      color: #3f3f46;
+    }
+
     /* --- Results --- */
     .results-section {
       margin-top: 2rem;
@@ -338,6 +423,23 @@
       <label class="field-label" for="input">Your text</label>
       <textarea id="input" placeholder="Paste your message, idea, or problem here..."></textarea>
 
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Intensity</span>
+          <span class="slider-value" id="intensity-label">Moderate</span>
+        </div>
+        <div class="slider-container">
+          <div class="slider-track">
+            <div class="slider-fill" id="slider-fill" style="width: 50%"></div>
+          </div>
+          <input type="range" id="intensity" min="1" max="5" value="3" step="1" oninput="updateSlider(this.value)">
+        </div>
+        <div class="slider-labels">
+          <span>Subtle</span>
+          <span>Unhinged</span>
+        </div>
+      </div>
+
       <div class="controls">
         <div class="select-wrapper">
           <select id="style">
@@ -366,6 +468,7 @@
     async function generate() {
       const text = document.getElementById('input').value.trim();
       const style = document.getElementById('style').value;
+      const intensity = parseInt(document.getElementById('intensity').value);
       const btn = document.getElementById('generate');
       const results = document.getElementById('results');
       const resultsSection = document.getElementById('results-section');
@@ -382,7 +485,7 @@
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, style }),
+          body: JSON.stringify({ text, style, intensity }),
         });
 
         if (!res.ok) throw new Error('Request failed');
@@ -437,6 +540,13 @@
       const div = document.createElement('div');
       div.textContent = str;
       return div.innerHTML;
+    }
+
+    const intensityNames = { 1: 'Subtle', 2: 'Light', 3: 'Moderate', 4: 'Strong', 5: 'Unhinged' };
+
+    function updateSlider(val) {
+      document.getElementById('intensity-label').textContent = intensityNames[val];
+      document.getElementById('slider-fill').style.width = `${(val - 1) / 4 * 100}%`;
     }
 
     document.getElementById('input').addEventListener('keydown', (e) => {
