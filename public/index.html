@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Style Engine</title>
+  <title>Noel's Tools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,17 +15,68 @@
       background: #09090b;
       color: #e4e4e7;
       min-height: 100vh;
+    }
+
+    /* --- Nav --- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(9, 9, 11, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1a1a1e;
+    }
+
+    .nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      height: 56px;
+      gap: 2rem;
+    }
+
+    .nav-brand {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fafafa;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #71717a;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover { color: #a1a1aa; background: #18181b; }
+    .nav-link.active { color: #fafafa; background: #27272a; }
+
+    /* --- Page layout --- */
+    .page-wrap {
+      max-width: 620px;
+      margin: 0 auto;
       padding: 5rem 1.5rem 4rem;
     }
 
-    .container {
-      width: 100%;
-      max-width: 620px;
-    }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    /* --- Header --- */
+    /* --- Shared: Header --- */
     .header {
       text-align: center;
       margin-bottom: 3rem;
@@ -38,7 +89,6 @@
       width: 48px;
       height: 48px;
       border-radius: 14px;
-      background: linear-gradient(135deg, #f97316, #ec4899);
       margin-bottom: 1.25rem;
     }
 
@@ -62,7 +112,7 @@
       line-height: 1.5;
     }
 
-    /* --- Input Section --- */
+    /* --- Shared: Input section --- */
     .input-section {
       background: #18181b;
       border: 1px solid #27272a;
@@ -79,9 +129,8 @@
       letter-spacing: 0.01em;
     }
 
-    textarea {
+    textarea, input[type="text"], input[type="url"] {
       width: 100%;
-      height: 130px;
       background: #09090b;
       border: 1px solid #27272a;
       border-radius: 10px;
@@ -90,16 +139,18 @@
       font-size: 0.9rem;
       font-family: inherit;
       line-height: 1.6;
-      resize: vertical;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    textarea:focus {
+    textarea { height: 130px; resize: vertical; }
+
+    textarea:focus, input[type="text"]:focus, input[type="url"]:focus {
       border-color: #3f3f46;
       box-shadow: 0 0 0 3px rgba(113, 113, 122, 0.1);
     }
-    textarea::placeholder { color: #3f3f46; }
+
+    textarea::placeholder, input::placeholder { color: #3f3f46; }
 
     .controls {
       display: flex;
@@ -137,15 +188,15 @@
       right: 14px;
       top: 50%;
       transform: translateY(-50%);
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
       border-top: 5px solid #71717a;
       pointer-events: none;
     }
 
-    .generate-btn {
+    /* --- Shared: Buttons --- */
+    .btn-primary {
       background: linear-gradient(135deg, #f97316, #ec4899);
       border: none;
       border-radius: 10px;
@@ -160,13 +211,13 @@
       white-space: nowrap;
     }
 
-    .generate-btn:hover {
+    .btn-primary:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25);
     }
 
-    .generate-btn:active { transform: translateY(0); }
-    .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .hint {
       text-align: right;
@@ -184,9 +235,7 @@
     }
 
     /* --- Slider --- */
-    .slider-group {
-      margin-top: 1.125rem;
-    }
+    .slider-group { margin-top: 1.125rem; }
 
     .slider-header {
       display: flex;
@@ -195,22 +244,12 @@
       margin-bottom: 0.5rem;
     }
 
-    .slider-label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #a1a1aa;
-    }
-
-    .slider-value {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #f97316;
-    }
+    .slider-label { font-size: 0.8rem; font-weight: 500; color: #a1a1aa; }
+    .slider-value { font-size: 0.75rem; font-weight: 600; color: #f97316; }
 
     .slider-track {
       position: relative;
-      width: 100%;
-      height: 6px;
+      width: 100%; height: 6px;
       background: #27272a;
       border-radius: 3px;
     }
@@ -226,8 +265,7 @@
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
-      width: 100%;
-      height: 6px;
+      width: 100%; height: 6px;
       background: transparent;
       position: relative;
       z-index: 2;
@@ -237,8 +275,7 @@
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 18px; height: 18px;
       border-radius: 50%;
       background: #fafafa;
       box-shadow: 0 1px 4px rgba(0,0,0,0.4);
@@ -246,19 +283,10 @@
       transition: transform 0.15s;
     }
 
-    input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.15);
-    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
-    .slider-container {
-      position: relative;
-    }
-
-    .slider-container input[type="range"] {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+    .slider-container { position: relative; }
+    .slider-container input[type="range"] { position: absolute; top: 0; left: 0; }
 
     .slider-labels {
       display: flex;
@@ -268,10 +296,8 @@
       color: #3f3f46;
     }
 
-    /* --- Results --- */
-    .results-section {
-      margin-top: 2rem;
-    }
+    /* --- Results / Cards --- */
+    .results-section { margin-top: 2rem; }
 
     .results-header {
       display: flex;
@@ -288,10 +314,7 @@
       letter-spacing: 0.06em;
     }
 
-    .results-count {
-      font-size: 0.75rem;
-      color: #3f3f46;
-    }
+    .results-count { font-size: 0.75rem; color: #3f3f46; }
 
     .results {
       display: flex;
@@ -348,8 +371,7 @@
     }
 
     .copy-btn svg {
-      width: 12px;
-      height: 12px;
+      width: 12px; height: 12px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2;
@@ -357,16 +379,8 @@
       stroke-linejoin: round;
     }
 
-    .copy-btn:hover {
-      background: #27272a;
-      color: #a1a1aa;
-      border-color: #3f3f46;
-    }
-
-    .copy-btn.copied {
-      color: #4ade80;
-      border-color: rgba(74, 222, 128, 0.3);
-    }
+    .copy-btn:hover { background: #27272a; color: #a1a1aa; border-color: #3f3f46; }
+    .copy-btn.copied { color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
 
     .card-text {
       font-size: 0.9rem;
@@ -375,11 +389,9 @@
       white-space: pre-wrap;
     }
 
-    /* --- Spinner --- */
     .spinner {
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border: 2px solid rgba(255,255,255,0.25);
       border-top-color: white;
       border-radius: 50%;
@@ -390,7 +402,6 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* --- Error --- */
     .error {
       background: rgba(239, 68, 68, 0.08);
       border: 1px solid rgba(239, 68, 68, 0.2);
@@ -401,78 +412,183 @@
       line-height: 1.5;
     }
 
-    /* --- Divider --- */
     .divider {
       height: 1px;
       background: #27272a;
       margin: 2.5rem 0 0;
     }
+
+    /* --- Media Download specific --- */
+    .ig-input-row {
+      display: flex;
+      gap: 0.625rem;
+    }
+
+    .ig-input-row input { flex: 1; }
+
+    .ig-preview {
+      margin-top: 1.5rem;
+      animation: fadeIn 0.4s ease both;
+    }
+
+    .ig-preview .card {
+      text-align: center;
+    }
+
+    .ig-preview video,
+    .ig-preview img {
+      max-width: 100%;
+      max-height: 500px;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .ig-preview .btn-primary {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .ig-preview .btn-primary svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ig-status {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">
-        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <span class="nav-brand">Tools</span>
+      <div class="nav-links">
+        <div class="nav-link active" data-page="style-engine">Style Engine</div>
+        <div class="nav-link" data-page="media-download">Media Download</div>
       </div>
-      <h1>Style Engine</h1>
-      <p class="subtitle">Rewrite anything in a completely different vibe</p>
     </div>
+  </nav>
 
-    <div class="input-section">
-      <label class="field-label" for="input">Your text</label>
-      <textarea id="input" placeholder="Paste your message, idea, or problem here..."></textarea>
+  <div class="page-wrap">
 
-      <div class="slider-group">
-        <div class="slider-header">
-          <span class="slider-label">Intensity</span>
-          <span class="slider-value" id="intensity-label">Moderate</span>
+    <!-- Page: Style Engine -->
+    <div id="page-style-engine" class="page active">
+      <div class="header">
+        <div class="logo" style="background: linear-gradient(135deg, #f97316, #ec4899);">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
-        <div class="slider-container">
-          <div class="slider-track">
-            <div class="slider-fill" id="slider-fill" style="width: 50%"></div>
+        <h1>Style Engine</h1>
+        <p class="subtitle">Rewrite anything in a completely different vibe</p>
+      </div>
+
+      <div class="input-section">
+        <label class="field-label" for="se-input">Your text</label>
+        <textarea id="se-input" placeholder="Paste your message, idea, or problem here..."></textarea>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Intensity</span>
+            <span class="slider-value" id="intensity-label">Moderate</span>
           </div>
-          <input type="range" id="intensity" min="1" max="5" value="3" step="1" oninput="updateSlider(this.value)">
+          <div class="slider-container">
+            <div class="slider-track">
+              <div class="slider-fill" id="slider-fill" style="width: 50%"></div>
+            </div>
+            <input type="range" id="intensity" min="1" max="5" value="3" step="1" oninput="updateSlider(this.value)">
+          </div>
+          <div class="slider-labels">
+            <span>Subtle</span>
+            <span>Unhinged</span>
+          </div>
         </div>
-        <div class="slider-labels">
-          <span>Subtle</span>
-          <span>Unhinged</span>
+
+        <div class="controls">
+          <div class="select-wrapper">
+            <select id="se-style">
+              <option value="cocky">Cocky</option>
+              <option value="ceo">CEO</option>
+              <option value="funny">Funny</option>
+              <option value="analytical">Analytical</option>
+            </select>
+          </div>
+          <button class="btn-primary" id="se-generate" onclick="generate()">Generate</button>
+        </div>
+        <div class="hint"><kbd>Cmd</kbd> + <kbd>Enter</kbd></div>
+      </div>
+
+      <div id="se-results-section" class="results-section" style="display: none;">
+        <div class="divider"></div>
+        <div class="results-header" style="margin-top: 1.5rem;">
+          <span class="results-title">Results</span>
+          <span class="results-count" id="se-results-count"></span>
+        </div>
+        <div id="se-results" class="results"></div>
+      </div>
+    </div>
+
+    <!-- Page: Media Download -->
+    <div id="page-media-download" class="page">
+      <div class="header">
+        <div class="logo" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h1>Media Download</h1>
+        <p class="subtitle">Download from Instagram and YouTube</p>
+      </div>
+
+      <div class="input-section">
+        <label class="field-label" for="ig-url">URL</label>
+        <div class="ig-input-row">
+          <input type="url" id="ig-url" placeholder="Paste an Instagram or YouTube URL...">
+          <button class="btn-primary" id="media-download-btn" onclick="downloadIG()">Download</button>
         </div>
       </div>
 
-      <div class="controls">
-        <div class="select-wrapper">
-          <select id="style">
-            <option value="cocky">Cocky</option>
-            <option value="ceo">CEO</option>
-            <option value="funny">Funny</option>
-            <option value="analytical">Analytical</option>
-          </select>
-        </div>
-        <button class="generate-btn" id="generate" onclick="generate()">Generate</button>
-      </div>
-      <div class="hint"><kbd>Cmd</kbd> + <kbd>Enter</kbd></div>
+      <div id="ig-preview" class="ig-preview"></div>
+      <div id="ig-status" class="ig-status"></div>
     </div>
 
-    <div id="results-section" class="results-section" style="display: none;">
-      <div class="divider"></div>
-      <div class="results-header" style="margin-top: 1.5rem;">
-        <span class="results-title">Results</span>
-        <span class="results-count" id="results-count"></span>
-      </div>
-      <div id="results" class="results"></div>
-    </div>
   </div>
 
   <script>
+    /* --- Navigation --- */
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pages = document.querySelectorAll('.page');
+
+    function navigate(pageId) {
+      navLinks.forEach(l => l.classList.toggle('active', l.dataset.page === pageId));
+      pages.forEach(p => p.classList.toggle('active', p.id === `page-${pageId}`));
+      history.replaceState(null, '', `#${pageId}`);
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => navigate(link.dataset.page));
+    });
+
+    // Handle initial hash
+    const initialPage = location.hash.slice(1) || 'style-engine';
+    navigate(initialPage);
+
+    /* --- Style Engine --- */
     async function generate() {
-      const text = document.getElementById('input').value.trim();
-      const style = document.getElementById('style').value;
+      const text = document.getElementById('se-input').value.trim();
+      const style = document.getElementById('se-style').value;
       const intensity = parseInt(document.getElementById('intensity').value);
-      const btn = document.getElementById('generate');
-      const results = document.getElementById('results');
-      const resultsSection = document.getElementById('results-section');
-      const resultsCount = document.getElementById('results-count');
+      const btn = document.getElementById('se-generate');
+      const results = document.getElementById('se-results');
+      const resultsSection = document.getElementById('se-results-section');
+      const resultsCount = document.getElementById('se-results-count');
 
       if (!text) return;
 
@@ -549,8 +665,62 @@
       document.getElementById('slider-fill').style.width = `${(val - 1) / 4 * 100}%`;
     }
 
-    document.getElementById('input').addEventListener('keydown', (e) => {
+    document.getElementById('se-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && e.metaKey) generate();
+    });
+
+    /* --- Media Download --- */
+    async function downloadIG() {
+      const url = document.getElementById('ig-url').value.trim();
+      const btn = document.getElementById('media-download-btn');
+      const preview = document.getElementById('ig-preview');
+      const status = document.getElementById('ig-status');
+
+      if (!url) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Downloading...';
+      preview.innerHTML = '';
+      status.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/media-download', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        const mediaEl = data.type === 'video'
+          ? `<video src="${data.downloadUrl}" controls playsinline></video>`
+          : `<img src="${data.downloadUrl}" alt="Media content">`;
+
+        const durationBadge = data.duration ? `<span style="color: #52525b; font-size: 0.75rem;"> (${data.duration})</span>` : '';
+
+        preview.innerHTML = `
+          <div class="card">
+            ${mediaEl}
+            <p class="card-text" style="margin-bottom: 1rem; font-size: 0.8rem; color: #a1a1aa;">${escapeHtml(data.title)}${durationBadge}</p>
+            <a href="${data.downloadUrl}" download="${data.filename}">
+              <button class="btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Save ${data.type === 'video' ? 'Video' : 'Image'}
+              </button>
+            </a>
+          </div>
+        `;
+      } catch (err) {
+        status.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Download';
+      }
+    }
+
+    document.getElementById('ig-url').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') downloadIG();
     });
   </script>
 </body>
